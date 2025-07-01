@@ -33,7 +33,7 @@ SmartScribe is a modern web application that allows users to upload PDF files, a
 
 ## 📸 Screenshots
 
-> (Optional: add a few screenshots in `/public/screenshots/` and embed them here.)
+> (comming soon...)
 
 ---
 
@@ -44,3 +44,4 @@ SmartScribe is a modern web application that allows users to upload PDF files, a
 ```bash
 git clone https://github.com/yourusername/smartscribe.git
 cd smartscribe
+
