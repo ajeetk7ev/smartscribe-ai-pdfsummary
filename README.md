@@ -37,11 +37,60 @@ SmartScribe is a modern web application that allows users to upload PDF files, a
 
 ---
 
-## ⚙️ Getting Started
+## 🚀 Quick Start
 
-### 1. Clone the repository
+### Prerequisites
 
+- **Node.js** 18+ 
+- **npm/pnpm** package manager
+- **Git** version control
+
+### Installation
+
+1. **Clone the repository**
 ```bash
 git clone https://github.com/yourusername/smartscribe.git
 cd smartscribe
+```
+
+2. **Install dependencies**
+```bash
+pnpm install
+# or
+npm install
+```
+
+3. **Environment Setup**
+```bash
+cp .env.example .env.local
+```
+
+4. **Configure environment variables** (see Environment Variables section)
+
+5. **Database setup**
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+6. **Run development server**
+```bash
+pnpm dev
+# or
+npm run dev
+```
+
+7. **Open your browser**
+```
+http://localhost:3000
+```
+
+## 🔧 Environment Variables
+
+Create a `.env` file in your project root:
+
+```env
+# Database
+DATABASE_URL="your-mongodb-url"
+
 
