@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 
+
 export async function summarizeWithGemini(rawText: string): Promise<string> {
   const prompt = `
 You are an AI assistant.
@@ -31,7 +32,7 @@ ${rawText.slice(0, 12000)}
 
 
   // Get the model instance
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   // Generate content
   const result = await model.generateContent(prompt);
