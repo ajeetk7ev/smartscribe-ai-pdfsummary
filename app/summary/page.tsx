@@ -137,7 +137,7 @@ export default function SummaryPage() {
           <p className="text-center text-slate-600 dark:text-slate-400">No summaries found yet.</p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {summaries.map((summary, index) => (
+            {summaries?.map((summary, index) => (
               <motion.div key={summary.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * index }}>
                 <Card className="hover:shadow-lg transition-all h-full">
                   <CardContent className="p-5 space-y-3 cursor-pointer" onClick={() => handleOpen(index)}>

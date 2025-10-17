@@ -31,7 +31,7 @@ ${rawText.slice(0, 12000)}
 
 
   // Get the model instance
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
   // Generate content
   const result = await model.generateContent(prompt);
