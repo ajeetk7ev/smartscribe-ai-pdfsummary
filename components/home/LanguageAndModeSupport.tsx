@@ -1,6 +1,12 @@
 "use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Globe, SlidersHorizontal } from "lucide-react";
 
@@ -31,6 +37,11 @@ export default function LanguageAndModeSupport({
           </SelectTrigger>
           <SelectContent className="bg-popover text-popover-foreground">
             <SelectItem value="english">English</SelectItem>
+            <SelectItem value="hindi">Hindi</SelectItem>
+            <SelectItem value="telugu">Telugu</SelectItem>
+            <SelectItem value="tamil">Tamil</SelectItem>
+            <SelectItem value="punjabi">Punjabi</SelectItem>
+            <SelectItem value="marathi">Marathi</SelectItem>
             <SelectItem value="hindi">Hindi</SelectItem>
             <SelectItem value="spanish">Spanish</SelectItem>
             <SelectItem value="french">French</SelectItem>
