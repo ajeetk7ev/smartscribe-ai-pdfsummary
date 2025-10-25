@@ -42,7 +42,6 @@ export default function LanguageAndModeSupport({
             <SelectItem value="tamil">Tamil</SelectItem>
             <SelectItem value="punjabi">Punjabi</SelectItem>
             <SelectItem value="marathi">Marathi</SelectItem>
-            <SelectItem value="hindi">Hindi</SelectItem>
             <SelectItem value="spanish">Spanish</SelectItem>
             <SelectItem value="french">French</SelectItem>
             <SelectItem value="german">German</SelectItem>
