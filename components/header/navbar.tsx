@@ -22,7 +22,6 @@ export default function Navbar() {
 
   const navItems = [
     { label: 'Home', href: '/' },
-    { label: 'Upload', href: '/upload' },
     { label: 'Your Summary', href: '/summary' },
   ];
 
