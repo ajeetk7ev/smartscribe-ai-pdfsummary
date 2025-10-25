@@ -27,6 +27,8 @@ export async function POST(req: NextRequest) {
     }
     const formData = await req.formData();
     const uploadedFile = formData.get("file") as File;
+    const language = formData.get("language") as string;
+    const mode = formData.get("mode") as string;
 
     if (!uploadedFile || !(uploadedFile instanceof File)) {
       console.log("Invalid or missing file.");
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
 
 
     // 👉 Ask Gemini to summarize
-    const summary = await summarizeWithGemini(extractedText);
+    const summary = await summarizeWithGemini(extractedText, language, mode);
 
     console.log("[GEMINI_SUMMARY]", summary);
 
