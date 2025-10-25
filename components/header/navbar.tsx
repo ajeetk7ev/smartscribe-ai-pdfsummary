@@ -62,11 +62,6 @@ export default function Navbar() {
           <SignedIn>
             <UserButton />
           </SignedIn>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <Button className="text-sm font-medium">Sign In</Button>
-            </SignInButton>
-          </SignedOut>
         </div>
 
         {/* Mobile Menu Button */}
