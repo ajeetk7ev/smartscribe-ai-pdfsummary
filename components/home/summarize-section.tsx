@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   FileUp,
@@ -14,11 +14,14 @@ import LanguageAndModeSupport from "./LanguageAndModeSupport";
 import MindMap from "./MindMap";
 
 export default function SummarizePdf() {
+  const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2MB
+
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [language, setLanguage] = useState("english");
   const [mode, setMode] = useState("medium");
   const [error, setError] = useState("");
+  const [toast, setToast] = useState<{ message: string; type: "info" | "error" } | null>(null);
   const [viewMode, setViewMode] = useState<"cards" | "mindmap">("cards");
   const [summaryData, setSummaryData] = useState<
     { heading: string; points: string[] }[]
@@ -26,8 +29,44 @@ export default function SummarizePdf() {
   const [current, setCurrent] = useState(0);
   const [statusMessage, setStatusMessage] = useState("Idle");
 
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const showToast = (message: string, type: "info" | "error" = "info") => {
+    setToast({ message, type });
+  };
+
+  const handleFileChange = (nextFile: File | null) => {
+    if (!nextFile) {
+      setFile(null);
+      return;
+    }
+
+    if (nextFile.size > MAX_FILE_BYTES) {
+      const msg = "Please upload a PDF smaller than 2MB.";
+      setError(msg);
+      showToast(msg, "error");
+      setFile(null);
+      return;
+    }
+
+    setError("");
+    setFile(nextFile);
+  };
+
   const handleUpload = async () => {
     if (!file) return;
+
+    if (file.size > MAX_FILE_BYTES) {
+      const msg = "PDF size must be under 2MB.";
+      setError(msg);
+      showToast(msg, "error");
+      return;
+    }
+
     setLoading(true);
     setError("");
     setCurrent(0);
@@ -64,6 +103,7 @@ export default function SummarizePdf() {
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Upload failed.");
+      showToast(err.message || "Upload failed.", "error");
       setStatusMessage("Failed ❌");
     } finally {
       setLoading(false);
@@ -85,6 +125,10 @@ export default function SummarizePdf() {
           AI-powered summarization in beautiful card format.
         </p>
 
+        <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/60 dark:bg-amber-900/30 dark:text-amber-100">
+          Heads up: the free Gemini key can hit token limits on very long PDFs. Please upload focused documents under 2MB to avoid errors.
+        </div>
+
         {/* 🌐 Language and Mode Selector */}
         <LanguageAndModeSupport
           language={language}
@@ -103,12 +147,12 @@ export default function SummarizePdf() {
             Click to choose a PDF file
           </span>
           <span className="text-xs text-slate-500 dark:text-slate-400">
-            Max 10MB — .pdf only
+            Max 2MB — .pdf only
           </span>
           <input
             type="file"
             accept="application/pdf"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
             className="hidden"
           />
           {file && (
@@ -249,6 +293,20 @@ export default function SummarizePdf() {
           </motion.div>
         )}
       </div>
+
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-6 right-6 z-50 rounded-lg px-4 py-3 shadow-lg backdrop-blur ${
+            toast.type === "error"
+              ? "bg-red-500/90 text-white"
+              : "bg-slate-900/90 text-white"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

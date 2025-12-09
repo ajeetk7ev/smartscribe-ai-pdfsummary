@@ -1,51 +1,5 @@
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-// console.log("GEMINI API KEY IS ",process.env.GEMINI_API_KEY)
-
-// export async function summarizeWithGemini(rawText: string, language:string, mode:string): Promise<string> {
-//   const prompt = `
-// You are an AI assistant.
-
-// Summarize the following PDF content into **5 to 6 clearly separated sections**, each with:
-// - A **section heading** (start with "##")
-// - **4 to 6 concise bullet points** (start each point with "-")
-
-// Use clear, informative, and concise language. Avoid repeating ideas. Use bullet points that capture key concepts, facts, or takeaways.
-
-// Follow this exact format:
-
-// ## Section Title 1
-// - Bullet point 1
-// - Bullet point 2
-// ...
-
-// ## Section Title 2
-// - Bullet point 1
-// - Bullet point 2
-// ...
-
-// Here is the content to summarize:
-
-// ${rawText.slice(0, 12000)}
-// `;
-
-//   // Get the model instance
-//   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-//   // Generate content
-//   const result = await model.generateContent(prompt);
-//   const response = await result.response;
-
-//   // Extract plain text output
-//   const text = response.text();
-//   return text;
-// }
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-console.log("GEMINI API KEY IS ", process.env.GEMINI_API_KEY);
 
 export async function summarizeWithGemini(
   rawText: string,
@@ -98,11 +52,27 @@ ${rawText.slice(0, 12000)}
   // Get the model instance
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  // Generate content
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
+  try {
+    // Generate content
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
 
-  // Extract plain text output
-  const text = response.text();
-  return text;
+    // Extract plain text output
+    return response.text();
+  } catch (err: any) {
+    const status = err?.status;
+    const retry = err?.errorDetails?.[2]?.retryDelay;
+
+    if (status === 429) {
+      const retryMsg = retry ? ` Please retry in ${retry}.` : "";
+      throw new Error(
+        `Free Gemini quota exceeded or rate limited.${retryMsg} Consider waiting or adding your own API key.`
+      );
+    }
+
+    // Default error bubble-up
+    throw new Error(
+      err?.message || "Gemini request failed. Please try again shortly."
+    );
+  }
 }

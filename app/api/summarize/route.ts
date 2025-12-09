@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { summarizeWithGemini } from "@/lib/gemini";
 
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,6 +34,13 @@ export async function POST(req: NextRequest) {
     if (!uploadedFile || !(uploadedFile instanceof File)) {
       console.log("Invalid or missing file.");
       return NextResponse.json({ error: "No valid file uploaded." }, { status: 400 });
+    }
+
+    if (uploadedFile.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json(
+        { error: "PDF is too large. Please upload a file under 2MB." },
+        { status: 413 }
+      );
     }
 
     // ✅ Generate a unique file path in OS temp dir
@@ -67,7 +75,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ summary });
   } catch (error) {
     console.error("[PDF_UPLOAD_ERROR]", error);
-    return NextResponse.json({ error: "Failed to process PDF." }, { status: 500 });
+
+    const message =
+      (error as any)?.message || "Failed to process PDF.";
+    const status =
+      (error as any)?.status === 429 ||
+      message.toLowerCase().includes("quota")
+        ? 429
+        : 500;
+
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
